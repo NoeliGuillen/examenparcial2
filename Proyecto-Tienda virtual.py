@@ -1,0 +1,128 @@
+# Listas para almacenar productos completos
+inventario_general = []
+inventario_ofertas = []
+
+# Conjuntos para almacenar nombres de productos
+nombres_general = set()
+nombres_ofertas = set()
+
+def mostrar_productos(productos):
+    for producto in productos:
+        print(f"📦 Nombre: {producto['nombre']}")
+        print(f"💰 Precio: {producto['precio']}")
+        print(f"🔢 Cantidad: {producto['cantidad']}")
+        print(f"🏷️ Estado: {producto['estado']}")
+        print(f"📂 Categoría: {producto['categoria']}")
+        print(f"📍 Ubicación: {producto['ubicacion_almacen']}")
+        print("-" * 20)
+
+while True:
+    print("\n📋 MENÚ DE OPCIONES")
+    print("1. ➕ Agregar producto al Inventario General")
+    print("2. 🎯 Agregar producto al Inventario de Ofertas")
+    print("3. 🌐 Mostrar todos los productos (Unión)")
+    print("4. 🔍 Mostrar productos en General y Oferta (Intersección)")
+    print("5. 📂 Mostrar productos solo en Inventario General (Diferencia)")
+    print("6. 🎉 Mostrar productos exclusivos en Oferta (Diferencia)")
+    print("7. 🎭 Mostrar productos en un solo grupo, pero no en ambos (Diferencia Simétrica)")
+    print("8. 🚪 Salir")
+    
+    opcion = input("\n👉 Elige una opción: ").strip()
+    
+    if opcion == "1":
+        producto = {
+            "nombre": input("📝 Ingrese el nombre del producto: "),
+            "precio": float(input("💲 Ingrese el precio del producto: ")),
+            "cantidad": int(input("🔢 Ingrese la cantidad del producto en stock: ")),
+            "estado": input("🏷️ Ingrese el estado del producto (Nuevo, Usado): "),
+            "categoria": input("📂 Ingrese la categoría del producto (opcional): "),
+            "ubicacion_almacen": input("📍 Ingrese la ubicación en el almacén: ")
+        }
+        inventario_general.append(producto)
+        nombres_general.add(producto["nombre"])  # Agregar solo el nombre al conjunto
+        print("✅ Producto agregado al inventario general.")
+    
+    elif opcion == "2":
+        producto = {
+            "nombre": input("📝 Ingrese el nombre del producto: "),
+            "precio": float(input("💲 Ingrese el precio del producto: ")),
+            "cantidad": int(input("🔢 Ingrese la cantidad del producto en stock: ")),
+            "estado": input("🏷️ Ingrese el estado del producto (Nuevo, Usado): "),
+            "descuento": float(input("🎉 Ingrese el porcentaje de descuento (0-100): ")),
+            "duracion_oferta": input("⏳ Ingrese la duración de la oferta (en días): ")
+        }
+        inventario_ofertas.append(producto)
+        nombres_ofertas.add(producto["nombre"])  # Agregar solo el nombre al conjunto
+        print("✅ Producto agregado a las ofertas.")
+    
+    elif opcion == "3":
+        # Unión de nombres
+        todos_nombres = nombres_general | nombres_ofertas
+        print("🌐 Todos los productos disponibles:")
+        for nombre in todos_nombres:
+            # Buscar el producto en ambas listas
+            for producto in inventario_general + inventario_ofertas:
+                if producto["nombre"] == nombre:
+                    print(f"📦 Nombre: {producto['nombre']}")
+                    break
+    
+    elif opcion == "4":
+        # Intersección de nombres
+        comunes_nombres = nombres_general & nombres_ofertas
+        if comunes_nombres:
+            print("🔍 Productos en inventario y oferta:")
+            for nombre in comunes_nombres:
+                # Buscar el producto en ambas listas
+                for producto in inventario_general:
+                    if producto["nombre"] == nombre:
+                        print(f"📦 Nombre: {producto['nombre']}")
+                        break
+        else:
+            print("❌ No hay productos comunes en inventario y oferta.")
+    
+    elif opcion == "5":
+        # Diferencia: Inventario General - Inventario Ofertas
+        solo_general_nombres = nombres_general - nombres_ofertas
+        if solo_general_nombres:
+            print("📂 Productos solo en inventario general:")
+            for nombre in solo_general_nombres:
+                for producto in inventario_general:
+                    if producto["nombre"] == nombre:
+                        print(f"📦 Nombre: {producto['nombre']}")
+                        break
+        else:
+            print("❌ No hay productos solo en inventario general.")
+    
+    elif opcion == "6":
+        # Diferencia: Inventario Ofertas - Inventario General
+        solo_oferta_nombres = nombres_ofertas - nombres_general
+        if solo_oferta_nombres:
+            print("🎉 Productos exclusivos en oferta:")
+            for nombre in solo_oferta_nombres:
+                for producto in inventario_ofertas:
+                    if producto["nombre"] == nombre:
+                        print(f"📦 Nombre: {producto['nombre']}")
+                        break
+        else:
+            print("❌ No hay productos exclusivos en oferta.")
+    
+    elif opcion == "7":
+        # Diferencia simétrica
+        exclusivos_nombres = nombres_general ^ nombres_ofertas
+        if exclusivos_nombres:
+            print("🎭 Productos exclusivos en un grupo:")
+            for nombre in exclusivos_nombres:
+                # Buscar el producto en ambas listas
+                for producto in inventario_general + inventario_ofertas:
+                    if producto["nombre"] == nombre:
+                        print(f"📦 Nombre: {producto['nombre']}")
+                        break
+        else:
+            print("❌ No hay productos exclusivos en un grupo.")
+    
+    elif opcion == "8":
+        print("🚪 Saliendo del programa...")
+        break
+    
+    else:
+        print("❌ Opción no válida, intenta de nuevo.")
